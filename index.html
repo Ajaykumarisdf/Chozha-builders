@@ -26,7 +26,7 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2.2">
     <link rel="icon" type="image/png" href="assets/favicon.png">
 </head>
 
@@ -120,11 +120,11 @@
         </div>
     </section>
 
-    <!-- ===== 2. KEY ACHIEVEMENTS — Animated Counters ===== -->
+    <!-- ===== 2. KEY ACHIEVEMENTS — Live Animated Counters ===== -->
     <section class="stats-section" id="stats">
         <div class="container">
             <div class="stats-grid">
-                <div class="stat-item" id="stat-homes">
+                <div class="stat-item" id="stat-homes" title="Click to replay counting animation">
                     <div class="stat-icon">
                         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="1.8">
@@ -135,10 +135,14 @@
                     <div class="stat-number-wrap">
                         <span class="counter-num" data-target="15">15</span><span class="stat-suffix">+</span>
                     </div>
+                    <div class="stat-meter-track">
+                        <div class="stat-meter-fill" data-progress="100"></div>
+                    </div>
                     <div class="stat-label">Happy Families</div>
+                    <div class="stat-sublabel">Delighted Homeowners</div>
                 </div>
 
-                <div class="stat-item" id="stat-years">
+                <div class="stat-item" id="stat-years" title="Click to replay counting animation">
                     <div class="stat-icon">
                         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="1.8">
@@ -149,10 +153,14 @@
                     <div class="stat-number-wrap">
                         <span class="counter-num" data-target="15">15</span><span class="stat-suffix">+</span>
                     </div>
+                    <div class="stat-meter-track">
+                        <div class="stat-meter-fill" data-progress="100"></div>
+                    </div>
                     <div class="stat-label">Years of Excellence</div>
+                    <div class="stat-sublabel">Engineering Since 2010</div>
                 </div>
 
-                <div class="stat-item" id="stat-projects">
+                <div class="stat-item" id="stat-projects" title="Click to replay counting animation">
                     <div class="stat-icon">
                         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="1.8">
@@ -164,10 +172,14 @@
                     <div class="stat-number-wrap">
                         <span class="counter-num" data-target="25">25</span><span class="stat-suffix">+</span>
                     </div>
+                    <div class="stat-meter-track">
+                        <div class="stat-meter-fill" data-progress="100"></div>
+                    </div>
                     <div class="stat-label">Projects Delivered</div>
+                    <div class="stat-sublabel">Turnkey Constructions</div>
                 </div>
 
-                <div class="stat-item" id="stat-commitment">
+                <div class="stat-item" id="stat-commitment" title="Click to replay counting animation">
                     <div class="stat-icon">
                         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="1.8">
@@ -178,8 +190,16 @@
                     <div class="stat-number-wrap">
                         <span class="counter-num" data-target="100">100</span><span class="stat-suffix">%</span>
                     </div>
+                    <div class="stat-meter-track">
+                        <div class="stat-meter-fill" data-progress="100"></div>
+                    </div>
                     <div class="stat-label">Transparency & Trust</div>
+                    <div class="stat-sublabel">Zero Hidden Costs</div>
                 </div>
+            </div>
+            <div class="stats-live-badge">
+                <span class="stats-live-dot"></span>
+                <span>Verified Milestones across Mayiladuthurai District • Click any counter to replay</span>
             </div>
         </div>
     </section>
@@ -494,7 +514,7 @@
             <div class="site-visit-card">
                 <div class="site-visit-content">
                     <div class="site-visit-tag">
-                        <span class="pulse-green-dot"></span>
+                        <span class="pulse-gold-dot"></span>
                         Ongoing Construction Sites in Mayiladuthurai
                     </div>
                     <h2 class="site-visit-title">Inspect Our Construction Quality In Person Before You Decide</h2>
@@ -782,14 +802,17 @@
                     <p class="coverage-desc">Turnkey residential and commercial construction across Mayiladuthurai district with dedicated site supervisors.</p>
                 </div>
                 <div class="coverage-towns-grid">
-                    <span class="town-chip main-town">📍 Mayiladuthurai (HQ)</span>
-                    <span class="town-chip">📍 Sirkazhi</span>
-                    <span class="town-chip">📍 Kuthalam</span>
-                    <span class="town-chip">📍 Tharangambadi</span>
-                    <span class="town-chip">📍 Sembanarkoil</span>
-                    <span class="town-chip">📍 Poompuhar</span>
-                    <span class="town-chip">📍 Vaitheeswaran Koil</span>
-                    <span class="town-chip">📍 Kollidam</span>
+                    <span class="town-chip main-town">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        Mayiladuthurai (HQ)
+                    </span>
+                    <span class="town-chip"><span class="town-bullet"></span>Sirkazhi</span>
+                    <span class="town-chip"><span class="town-bullet"></span>Kuthalam</span>
+                    <span class="town-chip"><span class="town-bullet"></span>Tharangambadi</span>
+                    <span class="town-chip"><span class="town-bullet"></span>Sembanarkoil</span>
+                    <span class="town-chip"><span class="town-bullet"></span>Poompuhar</span>
+                    <span class="town-chip"><span class="town-bullet"></span>Vaitheeswaran Koil</span>
+                    <span class="town-chip"><span class="town-bullet"></span>Kollidam</span>
                 </div>
             </div>
         </div>
@@ -867,91 +890,112 @@
                             WhatsApp</p>
                     </div>
                     <form class="contact-form" id="contact-form">
-                        <!-- Quick Inquiry Chips -->
-                        <div class="quick-inquiry-row">
-                            <span class="quick-chips-label">Quick Select Project Type:</span>
-                            <div class="quick-chips-container" id="quick-chips">
-                                <button type="button" class="quick-chip active" data-type="Independent House">🏡 Independent House</button>
-                                <button type="button" class="quick-chip" data-type="Villa">🏰 Luxury Villa</button>
-                                <button type="button" class="quick-chip" data-type="Duplex">🏘️ 2-Storey Duplex</button>
-                                <button type="button" class="quick-chip" data-type="Commercial Building">🏢 Commercial</button>
-                                <button type="button" class="quick-chip" data-type="Renovation">🔨 Renovation</button>
+                        <!-- Project Type Selection (Native Radio Segmented Group - 100% Reliable & Fully Responsive) -->
+                        <div class="project-type-selection-box">
+                            <label class="project-type-main-label">
+                                <span>Select Project Type</span>
+                                <span class="required-star">*</span>
+                            </label>
+                            <div class="project-type-selector" id="project-type-selector" role="radiogroup" aria-label="Select Project Type">
+                                <label class="project-type-option">
+                                    <input type="radio" name="project_type" value="Independent House" checked>
+                                    <span class="project-type-pill">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                        <span>Independent House</span>
+                                    </span>
+                                </label>
+                                <label class="project-type-option">
+                                    <input type="radio" name="project_type" value="Luxury Villa">
+                                    <span class="project-type-pill">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                        <span>Luxury Villa</span>
+                                    </span>
+                                </label>
+                                <label class="project-type-option">
+                                    <input type="radio" name="project_type" value="Duplex Home">
+                                    <span class="project-type-pill">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="9" y1="22" x2="9" y2="2"/><line x1="4" y1="12" x2="20" y2="12"/></svg>
+                                        <span>Duplex Home</span>
+                                    </span>
+                                </label>
+                                <label class="project-type-option">
+                                    <input type="radio" name="project_type" value="Commercial Complex">
+                                    <span class="project-type-pill">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="8" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="16" y2="21"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="2" y1="15" x2="22" y2="15"/></svg>
+                                        <span>Commercial Building</span>
+                                    </span>
+                                </label>
+                                <label class="project-type-option">
+                                    <input type="radio" name="project_type" value="Renovation & Remodeling">
+                                    <span class="project-type-pill">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                                        <span>Renovation & Remodel</span>
+                                    </span>
+                                </label>
                             </div>
                         </div>
+
                         <!-- Row 1: Name & Mobile -->
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="form-name" class="form-label">Your Name <span
                                         class="required-star">*</span></label>
-                                <input type="text" id="form-name" name="name" required placeholder="Enter your name"
+                                <input type="text" id="form-name" name="name" required placeholder="Enter your full name"
                                     class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="form-mobile" class="form-label">Mobile Number <span
                                         class="required-star">*</span></label>
-                                <input type="tel" id="form-mobile" name="mobile" required placeholder="+91 XXXXX XXXXX"
+                                <input type="tel" id="form-mobile" name="mobile" required placeholder="+91 98765 43210"
                                     class="form-control">
                             </div>
                         </div>
 
-                        <!-- Row 2: Location & Project Type -->
+                        <!-- Row 2: Location & Plot Size -->
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="form-location" class="form-label">Location</label>
+                                <label for="form-location" class="form-label">Site Location</label>
                                 <input type="text" id="form-location" name="location"
-                                    placeholder="Your city/area (e.g., Mayiladuthurai)" class="form-control">
+                                    placeholder="e.g., Koranad, Mayiladuthurai" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label for="form-project-type" class="form-label">Project Type</label>
-                                <select id="form-project-type" name="project_type" class="form-control form-select">
-                                    <option value="">Select project type</option>
-                                    <option value="Independent House">Independent House</option>
-                                    <option value="Villa">Villa</option>
-                                    <option value="Duplex">Duplex</option>
-                                    <option value="Commercial Building">Commercial Building</option>
-                                    <option value="Renovation">Renovation</option>
-                                </select>
+                                <label for="form-plot-size" class="form-label">Plot / Built-up Size</label>
+                                <input type="text" id="form-plot-size" name="plot_size"
+                                    placeholder="e.g., 30×40 ft / 1,200 sq.ft" class="form-control">
                             </div>
                         </div>
 
-                        <!-- Row 3: Plot Size & Floors -->
+                        <!-- Row 3: Floors & Budget Range -->
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="form-plot-size" class="form-label">Plot Size</label>
-                                <input type="text" id="form-plot-size" name="plot_size"
-                                    placeholder="e.g., 30×40 ft (1,200 sq.ft)" class="form-control">
+                                <label for="form-floors" class="form-label">Proposed Floors</label>
+                                <select id="form-floors" name="floors" class="form-control form-select">
+                                    <option value="">Select number of floors</option>
+                                    <option value="Ground Floor Only">Ground Floor Only</option>
+                                    <option value="G + 1 Floor">G + 1 Floor</option>
+                                    <option value="G + 2 Floors">G + 2 Floors</option>
+                                    <option value="G + 3 Floors or More">G + 3 Floors or More</option>
+                                </select>
                             </div>
                             <div class="form-group">
-                                <label for="form-floors" class="form-label">Floors</label>
-                                <select id="form-floors" name="floors" class="form-control form-select">
-                                    <option value="">Select floors</option>
-                                    <option value="Ground Floor">Ground Floor</option>
-                                    <option value="G+1">G+1</option>
-                                    <option value="G+2">G+2</option>
-                                    <option value="G+3+">G+3+</option>
+                                <label for="form-budget" class="form-label">Planned Budget Range</label>
+                                <select id="form-budget" name="budget" class="form-control form-select">
+                                    <option value="">Select budget range</option>
+                                    <option value="Below ₹25 Lakhs">Below ₹25 Lakhs</option>
+                                    <option value="₹25 - 40 Lakhs">₹25 - 40 Lakhs</option>
+                                    <option value="₹40 - 60 Lakhs">₹40 - 60 Lakhs</option>
+                                    <option value="₹60 - 85 Lakhs">₹60 - 85 Lakhs</option>
+                                    <option value="₹85 Lakhs - 1.2 Crore">₹85 Lakhs - 1.2 Crore</option>
+                                    <option value="Above ₹1.2 Crore">Above ₹1.2 Crore</option>
                                 </select>
                             </div>
                         </div>
 
-                        <!-- Row 4: Budget Range -->
+                        <!-- Row 4: Message -->
                         <div class="form-group">
-                            <label for="form-budget" class="form-label">Budget Range</label>
-                            <select id="form-budget" name="budget" class="form-control form-select">
-                                <option value="">Select budget range</option>
-                                <option value="Below ₹20 Lakhs">Below ₹20 Lakhs</option>
-                                <option value="₹20 - 35 Lakhs">₹20 - 35 Lakhs</option>
-                                <option value="₹35 - 50 Lakhs">₹35 - 50 Lakhs</option>
-                                <option value="₹50 - 75 Lakhs">₹50 - 75 Lakhs</option>
-                                <option value="₹75 Lakhs - 1 Crore">₹75 Lakhs - 1 Crore</option>
-                                <option value="Above ₹1 Crore">Above ₹1 Crore</option>
-                            </select>
-                        </div>
-
-                        <!-- Row 5: Message -->
-                        <div class="form-group">
-                            <label for="form-message" class="form-label">Message</label>
+                            <label for="form-message" class="form-label">Project Details / Specific Requirements</label>
                             <textarea id="form-message" name="message" rows="3"
-                                placeholder="Tell us more about your dream project..." class="form-control"></textarea>
+                                placeholder="Tell us about your requirements (e.g., Vastu compliance, parking, timeline)..." class="form-control"></textarea>
                         </div>
 
                         <!-- Submit Button -->
@@ -962,8 +1006,7 @@
                             </svg>
                             <span>Send via WhatsApp</span>
                         </button>
-                        <p class="form-disclaimer">⚡ Clicking above opens WhatsApp with all your filled details
-                            pre-formatted for Er. Barath.</p>
+                        <p class="form-disclaimer">Direct WhatsApp consultation with Er. Barath, Lead Civil Engineer. 100% free with itemized material specifications.</p>
                     </form>
                 </div>
             </div>
@@ -1094,7 +1137,7 @@
         </svg>
     </a>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=2.2"></script>
 </body>
 
 </html>

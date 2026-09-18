@@ -114,85 +114,109 @@ function initApp() {
     ensurePlay(engineerVideo);
 
 
-    // ===== 5. INTERACTIVE ANIMATED COUNTERS (0 → Target) =====
-    const counterElements = document.querySelectorAll('.counter-num');
+    // ===== 5. LIVE INTERACTIVE PROGRESSIVE COUNTERS =====
+    const statItems = document.querySelectorAll('.stats-grid .stat-item');
+    const statsSection = document.getElementById('stats');
 
-    const runCounterAnimation = (counterEl, duration = 1800) => {
+    const animateSingleCounter = (item, duration = 1400) => {
+        if (!item) return;
+        const counterEl = item.querySelector('.counter-num');
+        const meterFill = item.querySelector('.stat-meter-fill');
+        if (!counterEl) return;
+
         const target = parseInt(counterEl.getAttribute('data-target'), 10);
         if (isNaN(target)) return;
 
-        const startTime = performance.now();
+        item.classList.add('is-counting');
         counterEl.textContent = '0';
+        if (meterFill) meterFill.style.width = '0%';
+
+        const startTime = performance.now();
 
         const updateCount = (currentTime) => {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
-            // Smooth ease out cubic
+            // Smooth ease-out cubic for realistic deceleration
             const eased = 1 - Math.pow(1 - progress, 3);
             const current = Math.round(eased * target);
 
             counterEl.textContent = current;
+            if (meterFill) {
+                meterFill.style.width = `${Math.min(eased * 100, 100)}%`;
+            }
 
             if (progress < 1) {
                 requestAnimationFrame(updateCount);
             } else {
                 counterEl.textContent = target;
+                if (meterFill) meterFill.style.width = '100%';
+                setTimeout(() => item.classList.remove('is-counting'), 300);
             }
         };
 
         requestAnimationFrame(updateCount);
     };
 
-    if (counterElements.length > 0) {
-        let hasAnimated = false;
+    if (statItems.length > 0 && statsSection) {
+        let hasAnimatedLive = false;
 
-        const triggerAllCounters = () => {
-            if (hasAnimated) return;
-            hasAnimated = true;
-            counterElements.forEach(counter => runCounterAnimation(counter, 1800));
+        const triggerLiveProgressiveCount = () => {
+            if (hasAnimatedLive) return;
+            hasAnimatedLive = true;
+
+            // Orchestrated live progression: each stat card ticks up with a slight stagger
+            statItems.forEach((item, index) => {
+                setTimeout(() => {
+                    animateSingleCounter(item, 1300 + index * 100);
+                }, index * 140);
+            });
         };
 
+        // Method 1: Direct viewport check on scroll & resize
+        const checkStatsInView = () => {
+            if (hasAnimatedLive) return;
+            const rect = statsSection.getBoundingClientRect();
+            if (rect.top < window.innerHeight - 30 && rect.bottom > 30) {
+                triggerLiveProgressiveCount();
+            }
+        };
+
+        window.addEventListener('scroll', checkStatsInView, { passive: true });
+        window.addEventListener('resize', checkStatsInView, { passive: true });
+
+        // Method 2: Standard IntersectionObserver with low threshold
         if ('IntersectionObserver' in window) {
-            const counterObserver = new IntersectionObserver((entries) => {
+            const statsObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        const targetCounters = entry.target.querySelectorAll('.counter-num');
-                        if (targetCounters.length > 0) {
-                            targetCounters.forEach(c => runCounterAnimation(c, 1800));
-                        } else if (entry.target.classList.contains('counter-num')) {
-                            runCounterAnimation(entry.target, 1800);
-                        }
-                        counterObserver.unobserve(entry.target);
+                        triggerLiveProgressiveCount();
+                        statsObserver.unobserve(entry.target);
                     }
                 });
             }, {
-                threshold: 0.1,
-                rootMargin: '50px 0px 50px 0px'
+                threshold: 0.1
             });
 
-            // Observe the parent containers for reliable triggering
-            const statContainers = document.querySelectorAll('.stats-section, .engineer-stats-strip, .stat-item, .eng-stat-box');
-            statContainers.forEach(container => counterObserver.observe(container));
-
-            // Safety fallback: trigger after 1.5s if not already visible
-            setTimeout(() => {
-                if (!hasAnimated) {
-                    triggerAllCounters();
-                }
-            }, 1500);
-        } else {
-            // Fallback for browsers without IntersectionObserver
-            setTimeout(triggerAllCounters, 300);
+            statsObserver.observe(statsSection);
         }
 
-        // Interactive Feature: Hover or Click replays the count-up animation!
-        counterElements.forEach(counter => {
-            const parentBox = counter.closest('.eng-stat-box') || counter.closest('.stat-item') || counter;
-            parentBox.addEventListener('mouseenter', () => {
-                runCounterAnimation(counter, 1200);
+        // Method 3: Immediate check in case section is already in view
+        checkStatsInView();
+
+        // Method 4: Safety fallback timer so it never fails to count live
+        setTimeout(triggerLiveProgressiveCount, 1000);
+
+        // Interactive Replay: Clicking or hovering on any card replays the live counter!
+        statItems.forEach(item => {
+            item.addEventListener('click', () => {
+                item.classList.add('user-interacted');
+                animateSingleCounter(item, 1000);
+                setTimeout(() => item.classList.remove('user-interacted'), 600);
             });
-            parentBox.addEventListener('click', () => {
-                runCounterAnimation(counter, 1200);
+            item.addEventListener('mouseenter', () => {
+                if (hasAnimatedLive) {
+                    animateSingleCounter(item, 900);
+                }
             });
         });
     }
@@ -343,28 +367,6 @@ function initApp() {
 
     // ===== 10. FREE QUOTE & ESTIMATION FORM TO WHATSAPP =====
     const contactForm = document.getElementById('contact-form');
-    const quickChips = document.querySelectorAll('.quick-chip');
-    const projectTypeSelect = document.getElementById('form-project-type');
-
-    // Quick Inquiry Chips Selection
-    if (quickChips.length && projectTypeSelect) {
-        quickChips.forEach(chip => {
-            chip.addEventListener('click', () => {
-                quickChips.forEach(c => c.classList.remove('active'));
-                chip.classList.add('active');
-                const selectedVal = chip.getAttribute('data-type');
-                if (selectedVal) {
-                    projectTypeSelect.value = selectedVal;
-                }
-            });
-        });
-
-        projectTypeSelect.addEventListener('change', () => {
-            quickChips.forEach(chip => {
-                chip.classList.toggle('active', chip.getAttribute('data-type') === projectTypeSelect.value);
-            });
-        });
-    }
 
     if (contactForm) {
         contactForm.querySelectorAll('.form-control').forEach(input => {
@@ -380,6 +382,18 @@ function initApp() {
             });
         });
 
+        // Interactive visual feedback for radio pill options
+        const projectRadioInputs = contactForm.querySelectorAll('input[name="project_type"]');
+        projectRadioInputs.forEach(radio => {
+            radio.addEventListener('change', () => {
+                const pill = radio.closest('.project-type-option')?.querySelector('.project-type-pill');
+                if (pill) {
+                    pill.style.transform = 'scale(0.96)';
+                    setTimeout(() => { pill.style.transform = ''; }, 150);
+                }
+            });
+        });
+
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -387,7 +401,7 @@ function initApp() {
             const name = (formData.get('name') || '').trim();
             const mobile = (formData.get('mobile') || '').trim();
             const location = (formData.get('location') || '').trim();
-            const projectType = (formData.get('project_type') || '').trim();
+            const projectType = (formData.get('project_type') || contactForm.querySelector('input[name="project_type"]:checked')?.value || 'Independent House').trim();
             const plotSize = (formData.get('plot_size') || '').trim();
             const floors = (formData.get('floors') || '').trim();
             const budget = (formData.get('budget') || '').trim();
@@ -398,15 +412,20 @@ function initApp() {
                 return;
             }
 
-            let waMsg = `🏠 *Free Quote & Estimation Request — Chozha Builders*\n\n`;
-            waMsg += `👤 *Your Name:* ${name}\n`;
-            waMsg += `📱 *Mobile Number:* ${mobile}\n`;
-            if (location) waMsg += `📍 *Location:* ${location}\n`;
-            if (projectType) waMsg += `🏗️ *Project Type:* ${projectType}\n`;
-            if (plotSize) waMsg += `📐 *Plot Size:* ${plotSize}\n`;
-            if (floors) waMsg += `🏢 *Floors:* ${floors}\n`;
-            if (budget) waMsg += `💰 *Budget Range:* ${budget}\n`;
-            if (message) waMsg += `\n💬 *Message:*\n${message}\n`;
+            // Professional, executive inquiry formatting — zero cartoon emojis
+            let waMsg = `*CHOZHA BUILDERS — PROJECT QUOTE & ESTIMATION INQUIRY*\n`;
+            waMsg += `Direct Consultation with Er. Barath, Lead Civil Engineer\n`;
+            waMsg += `--------------------------------------------------\n\n`;
+            waMsg += `• Client Name: ${name}\n`;
+            waMsg += `• Mobile Number: ${mobile}\n`;
+            if (location) waMsg += `• Site Location: ${location}\n`;
+            if (projectType) waMsg += `• Project Type: ${projectType}\n`;
+            if (plotSize) waMsg += `• Plot / Built-up Area: ${plotSize}\n`;
+            if (floors) waMsg += `• Proposed Floors: ${floors}\n`;
+            if (budget) waMsg += `• Planned Budget: ${budget}\n`;
+            if (message) waMsg += `\n• Requirements & Details:\n${message}\n`;
+            waMsg += `\n--------------------------------------------------\n`;
+            waMsg += `Inquiry generated from official website: chozhabuilders.in`;
 
             const encodedMsg = encodeURIComponent(waMsg);
             const waUrl = `https://wa.me/919787007583?text=${encodedMsg}`;
