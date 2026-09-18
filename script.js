@@ -427,6 +427,18 @@ function initApp() {
             waMsg += `\n--------------------------------------------------\n`;
             waMsg += `Inquiry generated from official website: chozhabuilders.in`;
 
+            // Track in Vercel Analytics
+            if (typeof window.va === 'function') {
+                window.va('event', {
+                    name: 'quote_form_submitted',
+                    data: {
+                        project_type: projectType,
+                        has_location: String(Boolean(location)),
+                        has_plot_size: String(Boolean(plotSize))
+                    }
+                });
+            }
+
             const encodedMsg = encodeURIComponent(waMsg);
             const waUrl = `https://wa.me/919787007583?text=${encodedMsg}`;
 
@@ -470,6 +482,21 @@ function initApp() {
 
         card.addEventListener('mouseleave', () => {
             card.style.transform = '';
+        });
+    });
+
+    // ===== 13. VERCEL ANALYTICS CTA TRACKING =====
+    document.querySelectorAll('a[href^="tel:"], a[href*="wa.me"]').forEach(link => {
+        link.addEventListener('click', function () {
+            if (typeof window.va === 'function') {
+                const isPhone = this.href.startsWith('tel:');
+                window.va('event', {
+                    name: isPhone ? 'phone_call_clicked' : 'whatsapp_clicked',
+                    data: {
+                        source: this.id || this.className || 'link'
+                    }
+                });
+            }
         });
     });
 
