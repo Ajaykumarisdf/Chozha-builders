@@ -1,40 +1,30 @@
 /* ============================================
    CHOZHA BUILDERS — INTERACTIVE JAVASCRIPT
+   Robust, Modern, and Resilient
    ============================================ */
 
-document.addEventListener('DOMContentLoaded', () => {
+function initApp() {
 
-    // ===== 1. SCROLL PROGRESS BAR & NAVBAR SCROLL =====
+    // ===== 1. SCROLL PROGRESS BAR & NAVBAR =====
     const navbar = document.getElementById('navbar');
     const scrollProgress = document.getElementById('scroll-progress');
     const backToTopBtn = document.getElementById('back-to-top');
 
     const handleScroll = () => {
-        const scrollTop = window.scrollY;
+        const scrollTop = window.scrollY || window.pageYOffset;
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
         const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
 
-        // Progress bar width
         if (scrollProgress) {
             scrollProgress.style.width = `${progress}%`;
         }
 
-        // Navbar shadow
         if (navbar) {
-            if (scrollTop > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
+            navbar.classList.toggle('scrolled', scrollTop > 40);
         }
 
-        // Back to top button
         if (backToTopBtn) {
-            if (scrollTop > 400) {
-                backToTopBtn.classList.add('visible');
-            } else {
-                backToTopBtn.classList.remove('visible');
-            }
+            backToTopBtn.classList.toggle('visible', scrollTop > 400);
         }
     };
 
@@ -74,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinkItems = document.querySelectorAll('.nav-link');
 
     const highlightNav = () => {
-        const scrollPos = window.scrollY + 140;
+        const scrollPos = (window.scrollY || window.pageYOffset) + 140;
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
             const sectionHeight = section.offsetHeight;
@@ -94,157 +84,173 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', highlightNav, { passive: true });
 
 
-    // ===== 4. INTERACTIVE CONSTRUCTION COST CALCULATOR =====
-    const calcAreaSlider = document.getElementById('calc-area');
-    const calcAreaVal = document.getElementById('calc-area-val');
-    const pkgCards = document.querySelectorAll('.pkg-card');
-    const floorBtns = document.querySelectorAll('.floor-btn');
-    const calcTotalPrice = document.getElementById('calc-total-price');
-    const calcTotalSub = document.getElementById('calc-total-sub');
-    const bdCivil = document.getElementById('bd-civil');
-    const bdFinishes = document.getElementById('bd-finishes');
-    const bdMep = document.getElementById('bd-mep');
-    const bdDesign = document.getElementById('bd-design');
-    const calcWhatsAppBtn = document.getElementById('calc-whatsapp-btn');
+    // ===== 4. AUTOPLAY VIDEOS (Protected with Try/Catch) =====
+    const heroVideo = document.getElementById('hero-video');
+    const engineerVideo = document.getElementById('engineer-video');
 
-    let currentRate = 2200;
-    let currentPkgName = 'Premium';
-    let currentFloors = 'Ground Floor';
-
-    const formatRupees = (num) => {
-        return '₹' + num.toLocaleString('en-IN');
-    };
-
-    const formatLakhs = (num) => {
-        if (num >= 10000000) {
-            return '₹' + (num / 10000000).toFixed(2) + ' Cr';
-        }
-        return '₹' + (num / 100000).toFixed(2) + ' L';
-    };
-
-    const updateCalculator = () => {
-        if (!calcAreaSlider || !calcTotalPrice) return;
-
-        const area = parseInt(calcAreaSlider.value, 10);
-        calcAreaVal.textContent = area.toLocaleString('en-IN');
-
-        const totalCost = area * currentRate;
-
-        // Animate price display
-        calcTotalPrice.textContent = formatRupees(totalCost);
-        calcTotalSub.textContent = `Approx. ${(totalCost / 100000).toFixed(2)} Lakhs for ${area.toLocaleString('en-IN')} sq.ft (${currentPkgName} • ${currentFloors})`;
-
-        // Breakdown items
-        const civilCost = Math.round(totalCost * 0.55);
-        const finishCost = Math.round(totalCost * 0.22);
-        const mepCost = Math.round(totalCost * 0.13);
-        const designCost = Math.round(totalCost * 0.10);
-
-        if (bdCivil) bdCivil.textContent = formatLakhs(civilCost);
-        if (bdFinishes) bdFinishes.textContent = formatLakhs(finishCost);
-        if (bdMep) bdMep.textContent = formatLakhs(mepCost);
-        if (bdDesign) bdDesign.textContent = formatLakhs(designCost);
-
-        // Update WhatsApp Quote Link
-        if (calcWhatsAppBtn) {
-            const quoteMsg = `🏠 *Construction Cost Estimate Request*\n\n` +
-                `📐 *Built-up Area:* ${area} sq.ft\n` +
-                `📦 *Package:* ${currentPkgName} (₹${currentRate}/sq.ft)\n` +
-                `🏢 *Floors:* ${currentFloors}\n` +
-                `💰 *Estimated Budget:* ${formatRupees(totalCost)} (~${(totalCost / 100000).toFixed(2)} Lakhs)\n\n` +
-                `Hello Er. Barath, I calculated this estimate on your website and would like to discuss my project details!`;
-            
-            calcWhatsAppBtn.href = `https://wa.me/919787007583?text=${encodeURIComponent(quoteMsg)}`;
+    const ensurePlay = (videoEl) => {
+        if (!videoEl) return;
+        try {
+            videoEl.muted = true;
+            videoEl.playsInline = true;
+            const playPromise = videoEl.play();
+            if (playPromise && typeof playPromise.catch === 'function') {
+                playPromise.catch(() => {
+                    const onFirstInteraction = () => {
+                        try { videoEl.play(); } catch (e) {}
+                        document.removeEventListener('touchstart', onFirstInteraction);
+                        document.removeEventListener('click', onFirstInteraction);
+                    };
+                    document.addEventListener('touchstart', onFirstInteraction, { once: true, passive: true });
+                    document.addEventListener('click', onFirstInteraction, { once: true, passive: true });
+                });
+            }
+        } catch (e) {
+            // Autoplay restricted by browser policy, handled silently
         }
     };
 
-    if (calcAreaSlider) {
-        calcAreaSlider.addEventListener('input', updateCalculator);
+    ensurePlay(heroVideo);
+    ensurePlay(engineerVideo);
 
-        pkgCards.forEach(card => {
-            card.addEventListener('click', () => {
-                pkgCards.forEach(c => c.classList.remove('active'));
-                card.classList.add('active');
-                currentRate = parseInt(card.getAttribute('data-rate'), 10);
-                currentPkgName = card.getAttribute('data-pkg');
-                updateCalculator();
+
+    // ===== 5. INTERACTIVE ANIMATED COUNTERS (0 → Target) =====
+    const counterElements = document.querySelectorAll('.counter-num');
+
+    const runCounterAnimation = (counterEl, duration = 1800) => {
+        const target = parseInt(counterEl.getAttribute('data-target'), 10);
+        if (isNaN(target)) return;
+
+        const startTime = performance.now();
+        counterEl.textContent = '0';
+
+        const updateCount = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            // Smooth ease out cubic
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const current = Math.round(eased * target);
+
+            counterEl.textContent = current;
+
+            if (progress < 1) {
+                requestAnimationFrame(updateCount);
+            } else {
+                counterEl.textContent = target;
+            }
+        };
+
+        requestAnimationFrame(updateCount);
+    };
+
+    if (counterElements.length > 0) {
+        let hasAnimated = false;
+
+        const triggerAllCounters = () => {
+            if (hasAnimated) return;
+            hasAnimated = true;
+            counterElements.forEach(counter => runCounterAnimation(counter, 1800));
+        };
+
+        if ('IntersectionObserver' in window) {
+            const counterObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const targetCounters = entry.target.querySelectorAll('.counter-num');
+                        if (targetCounters.length > 0) {
+                            targetCounters.forEach(c => runCounterAnimation(c, 1800));
+                        } else if (entry.target.classList.contains('counter-num')) {
+                            runCounterAnimation(entry.target, 1800);
+                        }
+                        counterObserver.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '50px 0px 50px 0px'
+            });
+
+            // Observe the parent containers for reliable triggering
+            const statContainers = document.querySelectorAll('.stats-section, .engineer-stats-strip, .stat-item, .eng-stat-box');
+            statContainers.forEach(container => counterObserver.observe(container));
+
+            // Safety fallback: trigger after 1.5s if not already visible
+            setTimeout(() => {
+                if (!hasAnimated) {
+                    triggerAllCounters();
+                }
+            }, 1500);
+        } else {
+            // Fallback for browsers without IntersectionObserver
+            setTimeout(triggerAllCounters, 300);
+        }
+
+        // Interactive Feature: Hover or Click replays the count-up animation!
+        counterElements.forEach(counter => {
+            const parentBox = counter.closest('.eng-stat-box') || counter.closest('.stat-item') || counter;
+            parentBox.addEventListener('mouseenter', () => {
+                runCounterAnimation(counter, 1200);
+            });
+            parentBox.addEventListener('click', () => {
+                runCounterAnimation(counter, 1200);
             });
         });
-
-        floorBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                floorBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentFloors = btn.getAttribute('data-floor');
-                updateCalculator();
-            });
-        });
-
-        updateCalculator();
     }
 
 
-    // ===== 5. STATS ANIMATION =====
-    const statNumbers = document.querySelectorAll('.stat-number');
-    let statsAnimated = false;
-
-    const animateStats = () => {
-        if (statsAnimated) return;
-
-        const statsSection = document.getElementById('stats');
-        if (!statsSection) return;
-
-        const rect = statsSection.getBoundingClientRect();
-
-        if (rect.top < window.innerHeight * 0.85 && rect.bottom > 0) {
-            statsAnimated = true;
-
-            statNumbers.forEach(stat => {
-                const target = parseInt(stat.getAttribute('data-target'), 10);
-                const duration = 2000;
-                const startTime = performance.now();
-
-                const updateCount = (currentTime) => {
-                    const elapsed = currentTime - startTime;
-                    const progress = Math.min(elapsed / duration, 1);
-                    const eased = 1 - Math.pow(1 - progress, 3);
-                    const current = Math.round(eased * target);
-
-                    stat.textContent = current;
-
-                    if (progress < 1) {
-                        requestAnimationFrame(updateCount);
-                    }
-                };
-
-                requestAnimationFrame(updateCount);
-            });
-        }
-    };
-
-    window.addEventListener('scroll', animateStats, { passive: true });
-    animateStats();
-
-
-    // ===== 6. SCROLL REVEAL ANIMATIONS =====
+    // ===== 6. SCROLL REVEAL ANIMATIONS (Fail-safe) =====
+    document.body.classList.add('js-ready');
     const revealElements = document.querySelectorAll('.reveal');
 
-    const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                revealObserver.unobserve(entry.target);
-            }
+    if (revealElements.length > 0) {
+        if ('IntersectionObserver' in window) {
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.05,
+                rootMargin: '0px 0px 80px 0px'
+            });
+
+            revealElements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    el.classList.add('visible');
+                } else {
+                    revealObserver.observe(el);
+                }
+            });
+
+            // Ensure no element stays hidden permanently
+            setTimeout(() => {
+                revealElements.forEach(el => el.classList.add('visible'));
+            }, 2000);
+        } else {
+            revealElements.forEach(el => el.classList.add('visible'));
+        }
+    }
+
+
+    // ===== 7. STAGGERED CARD ANIMATIONS =====
+    const staggerSets = [
+        '.services-grid .service-card',
+        '.why-grid .why-card',
+        '.stats-grid .stat-item'
+    ];
+
+    staggerSets.forEach(selector => {
+        const cards = document.querySelectorAll(selector);
+        cards.forEach((card, index) => {
+            card.style.transitionDelay = `${index * 0.06}s`;
         });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -40px 0px'
     });
 
-    revealElements.forEach(el => revealObserver.observe(el));
 
-
-    // ===== 7. TESTIMONIALS SLIDER =====
+    // ===== 8. TESTIMONIALS SLIDER =====
     const track = document.getElementById('testimonial-track');
     const dotsContainer = document.getElementById('testimonial-dots');
 
@@ -292,73 +298,91 @@ document.addEventListener('DOMContentLoaded', () => {
         if (slider) {
             slider.addEventListener('mouseenter', stopAutoSlide);
             slider.addEventListener('mouseleave', startAutoSlide);
+
+            // Touch/swipe support
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            slider.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+                stopAutoSlide();
+            }, { passive: true });
+
+            slider.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) {
+                        goToSlide((currentSlide + 1) % cards.length);
+                    } else {
+                        goToSlide((currentSlide - 1 + cards.length) % cards.length);
+                    }
+                }
+                startAutoSlide();
+            }, { passive: true });
         }
     }
 
 
-    // ===== 8. FAQ ACCORDION =====
-    const faqItems = document.querySelectorAll('.faq-item');
-
-    faqItems.forEach(item => {
-        const questionBtn = item.querySelector('.faq-question');
-        const answerDiv = item.querySelector('.faq-answer');
-
-        if (questionBtn && answerDiv) {
-            questionBtn.addEventListener('click', () => {
-                const isActive = item.classList.contains('active');
-
-                // Close other FAQ items
-                faqItems.forEach(otherItem => {
-                    if (otherItem !== item) {
-                        otherItem.classList.remove('active');
-                        const otherBtn = otherItem.querySelector('.faq-question');
-                        const otherAnswer = otherItem.querySelector('.faq-answer');
-                        if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
-                        if (otherAnswer) otherAnswer.style.maxHeight = null;
-                    }
-                });
-
-                // Toggle current
-                if (isActive) {
-                    item.classList.remove('active');
-                    questionBtn.setAttribute('aria-expanded', 'false');
-                    answerDiv.style.maxHeight = null;
-                } else {
-                    item.classList.add('active');
-                    questionBtn.setAttribute('aria-expanded', 'true');
-                    answerDiv.style.maxHeight = answerDiv.scrollHeight + 'px';
-                }
-            });
-        }
-    });
+    // ===== 9. PARALLAX HERO =====
+    const heroContent = document.querySelector('.hero-content');
+    if (heroContent) {
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY || window.pageYOffset;
+            if (scrollTop < window.innerHeight) {
+                const opacity = 1 - (scrollTop / (window.innerHeight * 0.7));
+                const translateY = scrollTop * 0.25;
+                heroContent.style.opacity = Math.max(0, opacity);
+                heroContent.style.transform = `translateY(${translateY}px)`;
+            }
+        }, { passive: true });
+    }
 
 
-    // ===== 9. CONTACT FORM TO WHATSAPP =====
+    // ===== 10. FREE QUOTE & ESTIMATION FORM TO WHATSAPP =====
     const contactForm = document.getElementById('contact-form');
 
     if (contactForm) {
+        contactForm.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('focus', () => {
+                if (input.parentElement) {
+                    input.parentElement.classList.add('focused');
+                }
+            });
+            input.addEventListener('blur', () => {
+                if (input.parentElement) {
+                    input.parentElement.classList.remove('focused');
+                }
+            });
+        });
+
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
             const formData = new FormData(contactForm);
-            const name = formData.get('name') || '';
-            const mobile = formData.get('mobile') || '';
-            const location = formData.get('location') || '';
-            const projectType = formData.get('project_type') || '';
-            const plotSize = formData.get('plot_size') || '';
-            const floors = formData.get('floors') || '';
-            const budget = formData.get('budget') || '';
-            const message = formData.get('message') || '';
+            const name = (formData.get('name') || '').trim();
+            const mobile = (formData.get('mobile') || '').trim();
+            const location = (formData.get('location') || '').trim();
+            const projectType = (formData.get('project_type') || '').trim();
+            const plotSize = (formData.get('plot_size') || '').trim();
+            const floors = (formData.get('floors') || '').trim();
+            const budget = (formData.get('budget') || '').trim();
+            const message = (formData.get('message') || '').trim();
 
-            let waMsg = `🏠 *New Project Inquiry — Chozha Builders*\n\n`;
-            waMsg += `👤 *Client Name:* ${name}\n`;
-            waMsg += `📱 *Mobile:* ${mobile}\n`;
+            if (!name || !mobile) {
+                alert('Please enter your Name and Mobile Number.');
+                return;
+            }
+
+            let waMsg = `🏠 *Free Quote & Estimation Request — Chozha Builders*\n\n`;
+            waMsg += `👤 *Your Name:* ${name}\n`;
+            waMsg += `📱 *Mobile Number:* ${mobile}\n`;
             if (location) waMsg += `📍 *Location:* ${location}\n`;
-            if (projectType) waMsg += `🏗️ *Project Type:* ${projectType.replace(/_/g, ' ').toUpperCase()}\n`;
+            if (projectType) waMsg += `🏗️ *Project Type:* ${projectType}\n`;
             if (plotSize) waMsg += `📐 *Plot Size:* ${plotSize}\n`;
-            if (floors) waMsg += `🏢 *Floors:* ${floors.toUpperCase()}\n`;
-            if (budget) waMsg += `💰 *Budget:* ${budget}\n`;
-            if (message) waMsg += `\n💬 *Message:* ${message}\n`;
+            if (floors) waMsg += `🏢 *Floors:* ${floors}\n`;
+            if (budget) waMsg += `💰 *Budget Range:* ${budget}\n`;
+            if (message) waMsg += `\n💬 *Message:*\n${message}\n`;
 
             const encodedMsg = encodeURIComponent(waMsg);
             const waUrl = `https://wa.me/919787007583?text=${encodedMsg}`;
@@ -368,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // ===== 10. SMOOTH SCROLL FOR ALL ANCHOR LINKS =====
+    // ===== 11. SMOOTH SCROLL FOR ANCHOR LINKS =====
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             const targetId = this.getAttribute('href');
@@ -384,4 +408,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-});
+
+    // ===== 12. TILT EFFECT ON SERVICE CARDS =====
+    const serviceCards = document.querySelectorAll('.service-card');
+
+    serviceCards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((y - centerY) / centerY) * -3;
+            const rotateY = ((x - centerX) / centerX) * 3;
+
+            card.style.transform = `translateY(-6px) perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+        });
+    });
+
+}
+
+// Robust execution whether DOM is already ready or loading
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
+}
