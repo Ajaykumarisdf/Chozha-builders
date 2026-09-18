@@ -239,7 +239,9 @@ function initApp() {
     const staggerSets = [
         '.services-grid .service-card',
         '.why-grid .why-card',
-        '.stats-grid .stat-item'
+        '.stats-grid .stat-item',
+        '.process-timeline .process-card',
+        '.materials-grid .material-badge'
     ];
 
     staggerSets.forEach(selector => {
@@ -341,6 +343,28 @@ function initApp() {
 
     // ===== 10. FREE QUOTE & ESTIMATION FORM TO WHATSAPP =====
     const contactForm = document.getElementById('contact-form');
+    const quickChips = document.querySelectorAll('.quick-chip');
+    const projectTypeSelect = document.getElementById('form-project-type');
+
+    // Quick Inquiry Chips Selection
+    if (quickChips.length && projectTypeSelect) {
+        quickChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                quickChips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                const selectedVal = chip.getAttribute('data-type');
+                if (selectedVal) {
+                    projectTypeSelect.value = selectedVal;
+                }
+            });
+        });
+
+        projectTypeSelect.addEventListener('change', () => {
+            quickChips.forEach(chip => {
+                chip.classList.toggle('active', chip.getAttribute('data-type') === projectTypeSelect.value);
+            });
+        });
+    }
 
     if (contactForm) {
         contactForm.querySelectorAll('.form-control').forEach(input => {
