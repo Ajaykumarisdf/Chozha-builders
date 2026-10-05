@@ -59,11 +59,24 @@ function initApp() {
     }
 
 
-    // ===== 3. ACTIVE NAV LINK ON SCROLL =====
+    // ===== 3. ACTIVE NAV LINK (MULTI-PAGE & SCROLL SUPPORT) =====
     const sections = document.querySelectorAll('section[id]');
     const navLinkItems = document.querySelectorAll('.nav-link');
+    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+
+    // Set active link based on current page
+    navLinkItems.forEach(link => {
+        const href = (link.getAttribute('href') || '').split('#')[0];
+        const isCurrent = href === currentPath || 
+                         (currentPath === 'index.html' && (href === '' || href === './' || href === 'index.html')) ||
+                         (currentPath === '' && (href === 'index.html' || href === './'));
+        if (isCurrent && href !== '') {
+            link.classList.add('active');
+        }
+    });
 
     const highlightNav = () => {
+        if (sections.length <= 1) return;
         const scrollPos = (window.scrollY || window.pageYOffset) + 140;
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
@@ -72,16 +85,20 @@ function initApp() {
 
             if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
                 navLinkItems.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === `#${sectionId}`) {
-                        link.classList.add('active');
+                    if (link.getAttribute('href')?.startsWith('#')) {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
                     }
                 });
             }
         });
     };
 
-    window.addEventListener('scroll', highlightNav, { passive: true });
+    if (sections.length > 1) {
+        window.addEventListener('scroll', highlightNav, { passive: true });
+    }
 
 
     // ===== 4. AUTOPLAY VIDEOS (Protected with Try/Catch) =====
@@ -365,8 +382,16 @@ function initApp() {
     }
 
 
-    // ===== 10. FREE QUOTE & ESTIMATION FORM TO WHATSAPP =====
+    // ===== 10. FREE QUOTE & ESTIMATION FORM VIA FORMSPREE (EMAIL) =====
     const contactForm = document.getElementById('contact-form');
+    const formSuccessOverlay = document.getElementById('form-success-overlay');
+    const formSuccessClose = document.getElementById('form-success-close');
+
+    if (formSuccessClose && formSuccessOverlay) {
+        formSuccessClose.addEventListener('click', () => {
+            formSuccessOverlay.classList.remove('show');
+        });
+    }
 
     if (contactForm) {
         contactForm.querySelectorAll('.form-control').forEach(input => {
@@ -394,12 +419,19 @@ function initApp() {
             });
         });
 
-        contactForm.addEventListener('submit', (e) => {
+        contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            // Bot honeypot check
+            const honeypot = contactForm.querySelector('input[name="_gotcha"]');
+            if (honeypot && honeypot.value) {
+                return;
+            }
 
             const formData = new FormData(contactForm);
             const name = (formData.get('name') || '').trim();
             const mobile = (formData.get('mobile') || '').trim();
+            const email = (formData.get('email') || '').trim();
             const location = (formData.get('location') || '').trim();
             const projectType = (formData.get('project_type') || contactForm.querySelector('input[name="project_type"]:checked')?.value || 'Independent House').trim();
             const plotSize = (formData.get('plot_size') || '').trim();
@@ -407,42 +439,86 @@ function initApp() {
             const budget = (formData.get('budget') || '').trim();
             const message = (formData.get('message') || '').trim();
 
-            if (!name || !mobile) {
-                alert('Please enter your Name and Mobile Number.');
+            // Gentle check: ensure at least one contact channel (Name, Mobile, or Email)
+            if (!name && !mobile && !email) {
+                alert('Please enter at least your Name or Contact Number/Email so Er. Barath can reach you.');
+                const firstField = contactForm.querySelector('#form-name') || contactForm.querySelector('#form-mobile');
+                if (firstField) firstField.focus();
                 return;
             }
 
-            // Professional, executive inquiry formatting — zero cartoon emojis
-            let waMsg = `*CHOZHA BUILDERS — PROJECT QUOTE & ESTIMATION INQUIRY*\n`;
-            waMsg += `Direct Consultation with Er. Barath, Lead Civil Engineer\n`;
-            waMsg += `--------------------------------------------------\n\n`;
-            waMsg += `• Client Name: ${name}\n`;
-            waMsg += `• Mobile Number: ${mobile}\n`;
-            if (location) waMsg += `• Site Location: ${location}\n`;
-            if (projectType) waMsg += `• Project Type: ${projectType}\n`;
-            if (plotSize) waMsg += `• Plot / Built-up Area: ${plotSize}\n`;
-            if (floors) waMsg += `• Proposed Floors: ${floors}\n`;
-            if (budget) waMsg += `• Planned Budget: ${budget}\n`;
-            if (message) waMsg += `\n• Requirements & Details:\n${message}\n`;
-            waMsg += `\n--------------------------------------------------\n`;
-            waMsg += `Inquiry generated from official website: chozhabuilders.in`;
+            const submitBtn = contactForm.querySelector('button[type="submit"]') || document.getElementById('form-submit');
+            const originalBtnHtml = submitBtn ? submitBtn.innerHTML : 'Submit Free Quote Request';
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('form-submit-loading');
+                submitBtn.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 0.8s linear infinite;">
+                        <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
+                        <path d="M12 2a10 10 0 0 1 10 10"/>
+                    </svg>
+                    <span>Sending Quote Request...</span>
+                `;
+            }
 
             // Track in Vercel Analytics
             if (typeof window.va === 'function') {
-                window.va('event', {
-                    name: 'quote_form_submitted',
-                    data: {
-                        project_type: projectType,
-                        has_location: String(Boolean(location)),
-                        has_plot_size: String(Boolean(plotSize))
-                    }
-                });
+                try {
+                    window.va('event', {
+                        name: 'quote_form_submitted',
+                        data: {
+                            project_type: projectType,
+                            has_location: String(Boolean(location)),
+                            has_plot_size: String(Boolean(plotSize)),
+                            has_budget: String(Boolean(budget))
+                        }
+                    });
+                } catch (vaErr) {
+                    console.warn('Analytics event failed:', vaErr);
+                }
             }
 
-            const encodedMsg = encodeURIComponent(waMsg);
-            const waUrl = `https://wa.me/919787007583?text=${encodedMsg}`;
+            // Submit to Formspree endpoint via AJAX
+            const endpoint = contactForm.getAttribute('action') || 'https://formspree.io/f/mvkzpeqp';
 
-            window.open(waUrl, '_blank');
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // Success! Show beautiful overlay
+                    if (formSuccessOverlay) {
+                        formSuccessOverlay.classList.add('show');
+                    } else {
+                        alert('Thank you! Your quote request has been sent to Er. Barath. We will contact you shortly.');
+                    }
+                    contactForm.reset();
+                } else {
+                    const data = await response.json();
+                    if (data && data.errors) {
+                        alert(data.errors.map(err => err.message).join(', '));
+                    } else {
+                        // Fallback: standard submit
+                        contactForm.submit();
+                    }
+                }
+            } catch (err) {
+                console.warn('AJAX submit error, falling back to native POST:', err);
+                // Fallback to native form post if fetch fails
+                contactForm.submit();
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('form-submit-loading');
+                    submitBtn.innerHTML = originalBtnHtml;
+                }
+            }
         });
     }
 
