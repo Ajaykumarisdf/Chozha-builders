@@ -1305,79 +1305,226 @@ a.contact-link:hover { color: var(--gold-dark); font-weight: 600; }
 /* ==========================
    BRANDED MATERIALS TRUST STRIP
    ========================== */
+/* ==========================
+   CERTIFIED BRANDS & MATERIALS TRUST SECTION
+   ========================== */
 .materials-trust-section {
-    padding: 36px 0;
-    background: var(--white);
-    border-bottom: 1px solid rgba(0,0,0,0.06);
+    padding: 85px 0 95px;
+    background: linear-gradient(180deg, #141311 0%, #1a1814 50%, #141311 100%);
+    position: relative;
+    border-top: 1px solid rgba(191, 155, 81, 0.25);
+    border-bottom: 1px solid rgba(191, 155, 81, 0.25);
+    overflow: hidden;
 }
-.materials-header {
+.materials-trust-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 350px;
+    background: radial-gradient(ellipse at center, rgba(191, 155, 81, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+}
+.materials-trust-inner {
+    position: relative;
+    z-index: 1;
+}
+.materials-trust-header {
     text-align: center;
-    margin-bottom: 24px;
+    max-width: 820px;
+    margin: 0 auto 50px;
 }
-.materials-tag {
-    display: inline-block;
-    padding: 4px 14px;
-    background: var(--gold-pale);
-    color: var(--gold-dark);
-    font-size: 0.72rem;
+.materials-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 18px;
+    background: rgba(191, 155, 81, 0.12);
+    border: 1px solid rgba(191, 155, 81, 0.35);
+    border-radius: 50px;
+    color: #e6ca85;
+    font-size: 0.8rem;
     font-weight: 700;
-    border-radius: var(--radius-full);
-    letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin-bottom: 6px;
-    border: 1px solid var(--gold-lighter);
+    letter-spacing: 0.08em;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+.materials-pill svg {
+    color: #c5a059;
 }
 .materials-title {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-    font-weight: 600;
+    font-family: var(--font-display, 'Cinzel', serif);
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.3;
+    margin-bottom: 14px;
+    letter-spacing: 0.02em;
 }
-.materials-grid {
+.materials-title .gold-gradient {
+    background: linear-gradient(135deg, #f7e2a9 0%, #c5a059 50%, #9e782f 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.materials-divider {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #c5a059, transparent);
+    margin: 16px auto 20px;
+}
+.materials-subtitle {
+    font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+    font-size: 1.05rem;
+    color: #b5b0a4;
+    line-height: 1.7;
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+/* Badges Grid */
+.materials-badges-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 16px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
 }
-.material-badge {
+@media (max-width: 992px) {
+    .materials-badges-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+@media (max-width: 600px) {
+    .materials-badges-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    .materials-title {
+        font-size: 1.6rem;
+    }
+    .materials-trust-section {
+        padding: 60px 0 70px;
+    }
+}
+
+/* Individual Brand Card */
+.mat-badge {
+    background: rgba(28, 26, 23, 0.85);
+    border: 1px solid rgba(191, 155, 81, 0.2);
+    border-radius: 16px;
+    padding: 26px 24px 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+.mat-badge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #c5a059, transparent);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+.mat-badge:hover {
+    transform: translateY(-6px);
+    background: rgba(36, 32, 27, 0.95);
+    border-color: rgba(191, 155, 81, 0.55);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45), 0 0 20px rgba(191, 155, 81, 0.15);
+}
+.mat-badge:hover::before {
+    opacity: 1;
+}
+
+/* Card Header */
+.mat-badge-header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 14px 16px;
-    background: var(--off-white);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-md);
-    transition: all var(--transition);
+    justify-content: space-between;
+    margin-bottom: 18px;
 }
-.material-badge:hover {
-    transform: translateY(-3px);
-    border-color: var(--gold);
-    box-shadow: var(--shadow-md);
-    background: var(--white);
-}
-.material-badge-icon {
+.mat-badge-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(191, 155, 81, 0.18) 0%, rgba(191, 155, 81, 0.05) 100%);
+    border: 1px solid rgba(191, 155, 81, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    height: 38px;
-    background: var(--gold-pale);
-    color: var(--gold);
-    border-radius: var(--radius-sm);
-    flex-shrink: 0;
+    color: #e6ca85;
+    transition: all 0.3s ease;
 }
-.material-badge-info {
-    display: flex;
-    flex-direction: column;
+.mat-badge:hover .mat-badge-icon {
+    background: linear-gradient(135deg, #c5a059 0%, #9e782f 100%);
+    color: #141311;
+    transform: scale(1.05);
+    border-color: #f7e2a9;
 }
-.material-name {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    line-height: 1.2;
-}
-.material-spec {
+.mat-category-tag {
     font-size: 0.72rem;
-    color: var(--text-secondary);
-    margin-top: 2px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #c5a059;
+    background: rgba(191, 155, 81, 0.1);
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+/* Card Body */
+.mat-badge-body {
+    margin-bottom: 20px;
+}
+.mat-name {
+    font-family: var(--font-display, 'Cinzel', serif);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 6px;
+    letter-spacing: 0.01em;
+}
+.mat-spec-pill {
+    display: inline-block;
+    font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #f7e2a9;
+    margin-bottom: 10px;
+}
+.mat-desc {
+    font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+    font-size: 0.85rem;
+    color: #9e988c;
+    line-height: 1.55;
+    margin: 0;
+}
+
+/* Card Footer */
+.mat-badge-footer {
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.mat-verified-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: #4cd964;
+    letter-spacing: 0.02em;
+}
+.mat-verified-badge svg {
+    flex-shrink: 0;
 }
 
 /* ==========================
